@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const apiUrl = process.env.REACT_APP_API_URL || 'https://filelock45.onrender.com/api';
+const configuredApiUrl = (process.env.REACT_APP_API_URL || 'https://filelock45.onrender.com').trim();
+const apiUrl = configuredApiUrl.endsWith('/api')
+  ? configuredApiUrl
+  : `${configuredApiUrl.replace(/\/$/, '')}/api`;
 
 const api = axios.create({
   baseURL: apiUrl,
