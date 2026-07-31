@@ -4,7 +4,7 @@
   "description": "A secure file locker web app with public signup/login, authenticated upload/download/preview, and a modern React SPA frontend backed by a Node.js/Express/MongoDB API.",
   "main": "index.js",
   "scripts": {
-    "build": "npm --prefix frontend install && npm --prefix frontend run build",
+    "build": "npm --prefix backend install && npm --prefix frontend install && npm --prefix frontend run build",
     "start": "node backend/server.js",
     "dev": "node backend/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
