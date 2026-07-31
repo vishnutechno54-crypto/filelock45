@@ -4,11 +4,14 @@ const connectDB = async () => {
   const primaryUri = process.env.MONGODB_URI || process.env.MONGO_URI;
   const secondaryUri = process.env.MONGODB_URI_STD;
   const mongoUri = primaryUri || secondaryUri;
+  const uriSource = primaryUri ? 'MONGODB_URI/MONGO_URI' : (secondaryUri ? 'MONGODB_URI_STD' : 'none');
 
   try {
     if (!mongoUri) {
       throw new Error('MongoDB connection string is missing. Set MONGODB_URI, MONGODB_URI_STD, or MONGO_URI in your environment.');
     }
+
+    console.log(`🔌 Attempting MongoDB connection using ${uriSource}`);
 
     const connectOptions = (uri) => ({
       serverSelectionTimeoutMS: 10000,
@@ -46,7 +49,7 @@ const connectDB = async () => {
       }
     }
     console.error('For Atlas connection docs see: https://www.mongodb.com/docs/atlas/');
-    process.exit(1);
+    console.warn('⚠️ Continuing without MongoDB for now. Auth and file routes may fail until the connection is fixed.');
   }
 };
 
