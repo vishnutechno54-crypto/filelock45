@@ -16,7 +16,24 @@ const errorHandler = require('./middleware/error');
 const app = express();
 
 // Connect to database
-connectDB();
+connectDB().then(async () => {
+  try {
+    const User = require('./models/User');
+    const existingUser = await User.findOne({});
+    if (!existingUser) {
+      await User.create({
+        name: 'Administrator',
+        email: process.env.ADMIN_EMAIL || 'admin@filelocker.com',
+        password: process.env.ADMIN_PASSWORD || 'Admin@123456',
+        role: 'admin',
+        storageLimit: 107374182400,
+      });
+      console.log('✅ Default admin user created');
+    }
+  } catch (error) {
+    console.warn('⚠️ Could not initialize default admin user:', error.message);
+  }
+});
 
 const frontendOrigins = [
   'https://filelock45.vercel.app',
