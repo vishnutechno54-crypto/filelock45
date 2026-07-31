@@ -18,12 +18,21 @@ const app = express();
 // Connect to database
 connectDB();
 
-const frontendOrigin = process.env.FRONTEND_URL || 'https://filelock45.vercel.app';
+const frontendOrigins = [
+  'https://filelock45.vercel.app',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+];
+
+const configuredFrontendOrigin = process.env.FRONTEND_URL;
+if (configuredFrontendOrigin) {
+  frontendOrigins.push(configuredFrontendOrigin);
+}
 
 // Security middleware
 app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 app.use(cors({
-  origin: frontendOrigin,
+  origin: frontendOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],

@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const apiUrl = process.env.REACT_APP_API_URL || 'https://filelock45.onrender.com/api';
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: apiUrl,
   timeout: 60000,
 });
 
