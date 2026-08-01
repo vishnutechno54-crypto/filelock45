@@ -16,7 +16,15 @@ class GridFsStorageEngine {
       return cb(new Error('Authentication is required before uploading.'));
     }
 
+    if (!mongoose.connection.readyState || mongoose.connection.readyState !== 1) {
+      return cb(new Error('Database is not connected. Please try again shortly.'));
+    }
+
     const db = mongoose.connection.db;
+    if (!db) {
+      return cb(new Error('Database connection is not ready.'));
+    }
+
     const bucket = new GridFSBucket(db, { bucketName: 'filelocker_uploads' });
     const filename = `${uuidv4()}${path.extname(file.originalname)}`;
 

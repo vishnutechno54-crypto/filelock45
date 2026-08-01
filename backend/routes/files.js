@@ -110,7 +110,15 @@ router.get('/:id/download', protect, async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'File not found.' });
     }
 
+    if (!mongoose.connection.readyState || mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ success: false, message: 'Database is temporarily unavailable. Please try again shortly.' });
+    }
+
     const db = mongoose.connection.db;
+    if (!db) {
+      return res.status(503).json({ success: false, message: 'File storage is unavailable right now.' });
+    }
+
     const bucket = new GridFSBucket(db, { bucketName: 'filelocker_uploads' });
 
     file.downloadCount += 1;
@@ -147,7 +155,15 @@ router.get('/:id/preview', protect, async (req, res, next) => {
       return res.status(404).json({ success: false, message: 'File not found.' });
     }
 
+    if (!mongoose.connection.readyState || mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ success: false, message: 'Database is temporarily unavailable. Please try again shortly.' });
+    }
+
     const db = mongoose.connection.db;
+    if (!db) {
+      return res.status(503).json({ success: false, message: 'File storage is unavailable right now.' });
+    }
+
     const bucket = new GridFSBucket(db, { bucketName: 'filelocker_uploads' });
 
     res.set('Content-Type', file.mimetype);
@@ -203,7 +219,15 @@ router.delete('/:id', protect, async (req, res, next) => {
     const file = await File.findOne({ _id: req.params.id, owner: req.user._id });
     if (!file) return res.status(404).json({ success: false, message: 'File not found.' });
 
+    if (!mongoose.connection.readyState || mongoose.connection.readyState !== 1) {
+      return res.status(503).json({ success: false, message: 'Database is temporarily unavailable. Please try again shortly.' });
+    }
+
     const db = mongoose.connection.db;
+    if (!db) {
+      return res.status(503).json({ success: false, message: 'File storage is unavailable right now.' });
+    }
+
     const bucket = new GridFSBucket(db, { bucketName: 'filelocker_uploads' });
 
     try {
