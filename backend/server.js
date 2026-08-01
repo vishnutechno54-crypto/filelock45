@@ -1,4 +1,7 @@
-require('dotenv').config();
+const path = require('path');
+const loadEnv = require('./config/env');
+loadEnv({ cwd: process.cwd(), dirname: __dirname });
+
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');

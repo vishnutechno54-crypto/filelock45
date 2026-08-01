@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const loadEnv = require('./env');
+
+loadEnv({ cwd: process.cwd(), dirname: __dirname });
 
 const connectDB = async () => {
   const primaryUri = process.env.MONGODB_URI || process.env.MONGO_URI;
