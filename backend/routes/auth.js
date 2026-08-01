@@ -10,6 +10,10 @@ const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE || '7d' });
 };
 
+const isDatabaseUnavailable = (error) => {
+  return error?.name === 'MongoServerSelectionError' || error?.name === 'MongooseServerSelectionError' || error?.name === 'MongoNetworkError' || error?.message?.includes('buffering timed out') || error?.message?.includes('serverSelectionTimeoutMS') || error?.code === 'ECONNREFUSED' || error?.code === 'ENOTFOUND';
+};
+
 // @route POST /api/auth/register
 router.post(
   '/register',
@@ -57,6 +61,9 @@ router.post(
         },
       });
     } catch (error) {
+      if (isDatabaseUnavailable(error)) {
+        return res.status(503).json({ success: false, message: 'Database is temporarily unavailable. Please try again shortly.' });
+      }
       next(error);
     }
   }
@@ -112,6 +119,9 @@ router.post(
         },
       });
     } catch (error) {
+      if (isDatabaseUnavailable(error)) {
+        return res.status(503).json({ success: false, message: 'Database is temporarily unavailable. Please try again shortly.' });
+      }
       next(error);
     }
   }
